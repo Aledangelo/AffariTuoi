@@ -1,11 +1,14 @@
 package com.affarituoi.app.affarituoi.GameService;
 
+import com.affarituoi.app.affarituoi.Dottore.Dottore;
+import com.affarituoi.app.affarituoi.Offerta.Offerta;
 import com.affarituoi.app.affarituoi.Pacchista.Pacchista;
 import com.affarituoi.app.affarituoi.Pacco.Pacco;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -21,11 +24,11 @@ public class GameService {
     }
 
     private void initGame() {
-        Collections.shuffle(this.premi);
+        Collections.shuffle(this.premi);    // Mescola i pacchi per rendere casuale la loro posizione
         pacchi = IntStream.range(0, 20)
-                .mapToObj(i -> new Pacco(i, this.premi.get(i)))
+                .mapToObj(i -> new Pacco(i + 1, this.premi.get(i)))
                 .collect(Collectors.toList());
-        Collections.shuffle(pacchi); // Mescola i pacchi per rendere casuale la loro posizione
+        Collections.shuffle(pacchi);
     }
 
     public void setPacchista(String nome) {
@@ -40,18 +43,80 @@ public class GameService {
         this.pacchista.setPaccoCorrente(pacco);
     }
 
-    public Pacco cambioPacco(int id) {
+    public void cambioPacco(int id) {
         Pacco p_old = this.pacchista.getPaccoCorrente();
         p_old.setOpen(false);
         this.pacchi.add(p_old);
         Pacco p = getPaccoById(id);
         this.pacchi.remove(p);
         this.pacchista.setPaccoCorrente(p);
-        return p;
     }
 
     public Pacchista getPacchista() {
         return pacchista;
+    }
+
+    public boolean openNext(Scanner scanner) {
+        int scelta = 0;
+        System.out.print("Inserisci il prossimo pacco da aprire: ");
+        try {
+            scelta = scanner.nextInt();
+        } catch (InputMismatchException e) {
+            // System.out.println("Input non valido. Per favore inserisci un numero intero.");
+            scelta = -1;
+            scanner.nextLine();
+        }
+
+        Pacco p = scegliPacco(scelta);
+        if (p != null) {
+            System.out.println("Hai aperto il pacco " + p.getID() + " con un valore di €" + p.getValore());
+            return true;
+        }
+        else {
+            System.out.println("Il pacco selezionato non è valido");
+            return false;
+        }
+    }
+
+    public boolean manageOffer(Dottore dottore, List<Pacco> pacchiNonAperti, Scanner scanner) {
+        Offerta o = dottore.doOffer(pacchiNonAperti);
+        if (o.getType().equals("Cambio")) {
+            System.out.println("Offerta attuale: " + o.getType());
+            System.out.print("Accetti l'offerta? [s/N] ");
+            scanner.nextLine();
+            String chsn = scanner.nextLine();
+            if (chsn.equals("s") || chsn.equals("S")) {
+                System.out.print("Inserisci l'ID del pacco che vuoi prendere: ");
+                int id = scanner.nextInt();
+                cambioPacco(id);
+                // pacchiNonAperti = gameService.getClosedPacchi();
+                return true;
+            }
+        } else {
+            System.out.println("Offerta attuale: €" + o.getValue());
+            System.out.print("Accetti l'offerta? [s/N] ");
+            scanner.nextLine();
+            String chsn = scanner.nextLine();
+            if (chsn.equals("s") || chsn.equals("S")) {
+                System.out.println("Hai accettato €" + o.getValue() + ". Il gioco termina qui!");
+                // Qui deve uscire dal ciclo
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void welcome(Scanner scanner) {
+        System.out.println("Benvenuto a Affari Tuoi!");
+        System.out.print("Inserisci il tuo nome: ");
+        String nome = scanner.nextLine();
+        setPacchista(nome);
+
+        System.out.println(nome + ", per iniziare ti verrà assegnato un pacco casuale");
+        int my_index = ThreadLocalRandom.current().nextInt(1, 20);
+        Pacco paccoiniziale = scegliPacco(my_index);
+        assegnaPacco(paccoiniziale);
+        System.out.println("Ti è stato assegnato il pacco " + paccoiniziale.getID() + "\n");
     }
 
     public Pacco scegliPacco(int id) {
