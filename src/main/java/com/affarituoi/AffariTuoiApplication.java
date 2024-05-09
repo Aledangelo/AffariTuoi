@@ -57,8 +57,13 @@ public class AffariTuoiApplication implements CommandLineRunner {
 				System.out.println("Pacchi non aperti:");
 
 
-				for (int i = 0; i < pacchiNonAperti.size(); i++) {
-					System.out.println("€" + premiRimanenti.get(i) + "\t\t\t\tPacco: " + pacchiNonAperti.get(i).getID());
+				for (int i = 0; i < premiRimanenti.size(); i++) {
+					try {
+						System.out.println("€" + premiRimanenti.get(i) + "\t\t\t\tPacco: " + pacchiNonAperti.get(i).getID());
+					} catch (IndexOutOfBoundsException e) {
+						System.out.println("€" + premiRimanenti.get(i));
+					}
+
 				}
 				/*
 				pacchiNonAperti.forEach(p -> System.out.println("Pacco ID: " + p.getID()));	// Il valore non va printato
