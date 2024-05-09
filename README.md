@@ -36,6 +36,96 @@ java AffariTuoiApplication
 
 ---
 
+# UML
+Below is a representation of the classes using UML.
+
+<div><p align="center"><img src="img/classDiagram.png"></div>
+
+```plantuml
+@startuml
+package Pacco {
+    class Pacco {
+        - valore : int
+        - id : int
+        - isOpen : boolean = false
+
+        + Pacco(id : int, valore : int)
+        + getID() : int
+        + getValore() : int
+        + setOpen(isOpen : boolean) : void
+        + isOpen() : boolean
+    }
+}
+
+package Pacchista {
+    class Pacchista {
+        - nome : String
+        - paccoCorrente : Pacco
+
+        + Pacchista(nome : String)
+        + getNome() : String
+        + setPaccoCorrente(Pacco) : void
+        + getPaccoCorrente() : Pacco
+    }
+}
+
+package Offerta {
+    class Offerta {
+        - type : String
+        - value : int
+
+        + Offerta(type : String, value : int)
+        + getValue() : int
+        + getType() : String
+        + setType(type : String) : void
+        + setValue(value : int) : void
+    }
+}
+
+package Dottore {
+    class Dottore {
+        - storicoOfferte : List<Offerta>
+
+        + Dottore()
+        + getStoricoOfferte() : List<Offerta>
+        + setStoricoOfferte(List<Offerta>) : void
+        + doOffer(List<Pacco>) : Offerta
+        + calculateAverage(List<Pacco>) : int
+    }
+}
+
+package GameService {
+    class GameService {
+        - pacchi : List<Pacco>
+        - pacchista : Pacchista
+        - premi : List<Integer>
+
+        + GameService()
+        + setPacchista(nome : String) : void
+        + getPacchista() : Pacchista
+        + getPaccoScelto() : Pacco
+        + assegnaPacco(Pacco) : void
+        + cambioPacco(id : int) : void
+        + openNext(Scanner) : boolean
+        + manageOffer(Dottore, List<Pacco>, Scanner) : boolean
+        + welcome(Scanner) : void
+        + scegliPacco(id : int) : Pacco
+        + getClosedPacchi() : List<Pacco>
+        + getPremi() : List<Integer>
+    }
+}
+
+GameService ..> Pacchista : uses
+GameService ..> Pacco : uses
+GameService ..> Dottore : uses
+GameService ..> Offerta : uses
+Dottore ..> Offerta : uses
+Pacchista ..> Pacco : uses
+@enduml
+```
+
+---
+
 # Code
 
 * **Game Initialization**: The game initializes by setting up the briefcases and their contents, which are managed in the GameService class:
