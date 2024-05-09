@@ -65,10 +65,7 @@ public class AffariTuoiApplication implements CommandLineRunner {
 					}
 
 				}
-				/*
-				pacchiNonAperti.forEach(p -> System.out.println("Pacco ID: " + p.getID()));	// Il valore non va printato
-				gameService.getPremi().forEach(r -> System.out.println("€" + r));
-				*/
+
 				while(!gameService.openNext(scanner));
 			}
 		}

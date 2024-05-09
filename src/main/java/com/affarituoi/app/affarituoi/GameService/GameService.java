@@ -114,8 +114,15 @@ public class GameService {
         String nome = scanner.nextLine();
         setPacchista(nome);
 
-        System.out.println(nome + ", per iniziare ti verrà assegnato un pacco casuale");
-        int my_index = ThreadLocalRandom.current().nextInt(1, 20);
+        // System.out.println(nome + ", per iniziare ti verrà assegnato un pacco casuale");
+        // int my_index = ThreadLocalRandom.current().nextInt(1, 20);
+        System.out.println(nome + ", scegli un pacco per iniziare il gioco");
+        System.out.print("Inserisci un numero tra 1 e 20: ");
+        int my_index = scanner.nextInt();
+        if (my_index > 20)
+            my_index = 20;
+        else if (my_index < 1)
+            my_index = 1;
         Pacco paccoiniziale = scegliPacco(my_index);
         assegnaPacco(paccoiniziale);
         System.out.println("Ti è stato assegnato il pacco " + paccoiniziale.getID() + "\n");
