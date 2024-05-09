@@ -36,6 +36,7 @@ public class AffariTuoiApplication implements CommandLineRunner {
 
 			int cnt = 0;
 			List<Pacco> pacchiNonAperti = gameService.getClosedPacchi();
+			List<Integer> premiRimanenti = gameService.getPremi();
 			while (true) {
 				cnt++;
 				if (turni.contains(cnt)) {
@@ -44,6 +45,7 @@ public class AffariTuoiApplication implements CommandLineRunner {
 				}
 
 				pacchiNonAperti = gameService.getClosedPacchi();
+				premiRimanenti = gameService.getPremi();
 
 				if (pacchiNonAperti.isEmpty()) {
 					System.out.println("Congratulazioni " + gameService.getPacchista().getNome() + ", hai vinto €" + gameService.getPaccoScelto().getValore());
@@ -54,8 +56,14 @@ public class AffariTuoiApplication implements CommandLineRunner {
 				System.out.println("Pacco: " + gameService.getPaccoScelto().getID() + "\n");
 				System.out.println("Pacchi non aperti:");
 
-				pacchiNonAperti.forEach(p -> System.out.println("Pacco ID: " + p.getID() /* + ", Valore: " + p.getValore() */ ));	// Il valore non va printato
 
+				for (int i = 0; i < pacchiNonAperti.size(); i++) {
+					System.out.println("€" + premiRimanenti.get(i) + "\t\t\t\tPacco: " + pacchiNonAperti.get(i).getID());
+				}
+				/*
+				pacchiNonAperti.forEach(p -> System.out.println("Pacco ID: " + p.getID()));	// Il valore non va printato
+				gameService.getPremi().forEach(r -> System.out.println("€" + r));
+				*/
 				while(!gameService.openNext(scanner));
 			}
 		}

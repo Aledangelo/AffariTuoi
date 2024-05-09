@@ -19,14 +19,15 @@ public class GameService {
     private List<Integer> premi;
 
     public GameService() {
-        this.premi = Arrays.asList(0, 1, 5, 10, 20, 50, 75, 100, 200, 500, 5000, 10000, 15000, 20000, 30000, 50000, 75000, 100000, 200000, 300000);
+        this.premi = new ArrayList<>(Arrays.asList(0, 1, 5, 10, 20, 50, 75, 100, 200, 500, 5000, 10000, 15000, 20000, 30000, 50000, 75000, 100000, 200000, 300000));
         initGame();
     }
 
     private void initGame() {
-        Collections.shuffle(this.premi);    // Mescola i pacchi per rendere casuale la loro posizione
+        List<Integer> premi_temp = new ArrayList<>(this.premi);
+        Collections.shuffle(premi_temp);    // Mescola i pacchi per rendere casuale la loro posizione
         pacchi = IntStream.range(0, 20)
-                .mapToObj(i -> new Pacco(i + 1, this.premi.get(i)))
+                .mapToObj(i -> new Pacco(i + 1, premi_temp.get(i)))
                 .collect(Collectors.toList());
         Collections.shuffle(pacchi);
     }
@@ -70,6 +71,7 @@ public class GameService {
         Pacco p = scegliPacco(scelta);
         if (p != null) {
             System.out.println("Hai aperto il pacco " + p.getID() + " con un valore di €" + p.getValore());
+            this.premi.remove(Integer.valueOf(p.getValore()));
             return true;
         }
         else {
@@ -139,5 +141,9 @@ public class GameService {
         return this.pacchi.stream()
                 .filter(pacco -> !pacco.isOpen())
                 .collect(Collectors.toList());
+    }
+
+    public List<Integer> getPremi() {
+        return this.premi;
     }
 }
