@@ -42,7 +42,7 @@ public class Dottore {
             int valore_offerta = calculateAverage(listaPacchi);
             // Modifica un po' questo valore in base a altri parametri
             offerta.setType("Denaro");
-            offerta.setValue(valore_offerta);
+            offerta.setValue((int) (valore_offerta / 1000) * 1000);
         }
         return offerta;
     }
