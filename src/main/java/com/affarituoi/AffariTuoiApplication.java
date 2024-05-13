@@ -38,12 +38,12 @@ public class AffariTuoiApplication implements CommandLineRunner {
 			List<Pacco> pacchiNonAperti = gameService.getClosedPacchi();
 			List<Integer> premiRimanenti = gameService.getPremi();
 			while (true) {
-				cnt++;
 				if (turni.contains(cnt)) {
 					if (!gameService.manageOffer(dottore, pacchiNonAperti, scanner))
 						break;
 				}
-
+				
+				cnt++;
 				pacchiNonAperti = gameService.getClosedPacchi();
 				premiRimanenti = gameService.getPremi();
 
